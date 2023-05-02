@@ -1,0 +1,3 @@
+- draw a buffer on a canvas
+- raytrace a sphere with just constant color
+- bounce off the ray to the light source
