@@ -1,23 +1,42 @@
-//use image::{DynamicImage, ImageBuffer, Rgb};
 use minifb::{Key, Window, WindowOptions};
 
 const WIDTH: usize = 640;
 const HEIGHT: usize = 360;
 
-fn main() {
-    let buffer: Vec<u32> = init_buffer();
-
-    display_buffer(&buffer);
+struct Canvas {
+    width: usize,
+    height: usize,
+    buffer: Vec<u32>,
 }
 
-fn init_buffer() -> Vec<u32> {
-    let mut buffer: Vec<u32> = vec![0; WIDTH * HEIGHT];
-    let mut c:u32 = 0;
-    for i in buffer.iter_mut() {
-        c += 1;
-        *i = c; // write something more funny here!
+impl Canvas {
+    pub fn new(width: usize, height: usize) -> Self {
+        let mut buffer = vec![0_u32; width * height];
+        Self { height, width, buffer }
     }
-    buffer
+}
+
+impl Canvas {
+    pub fn draw_pixel(&mut self, x: usize, y: usize, color: u32) {
+        self.buffer[x + y * self.width] = color;
+    }
+}
+
+fn main() {
+    let canvas = init_canvas();
+
+    display_buffer(&canvas.buffer);
+}
+
+fn init_canvas() -> Canvas {
+    let mut canvas = Canvas::new(WIDTH, HEIGHT);
+    let mut c:u32 = 255;
+    canvas.draw_pixel(100, 100, c);
+    canvas.draw_pixel(300, 300, c);
+    canvas.draw_pixel(0, 0, c);
+    canvas.draw_pixel(0, 100, c);
+    canvas.draw_pixel(300, 400, c);
+    canvas
 }
 
 fn display_buffer(buffer: &[u32]) {
