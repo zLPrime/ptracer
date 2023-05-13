@@ -5,13 +5,14 @@ use minifb::{Key, Window, WindowOptions};
 const WIDTH: usize = 640;
 const HEIGHT: usize = 360;
 
-struct Vec3d {
+#[derive(Copy,Clone)]
+struct Point3d {
     x: f32,
     y: f32,
     z: f32,
 }
 
-type Point3d = Vec3d;
+type Vec3d = Point3d;
 
 struct Ray {
     origin: Point3d,
@@ -29,13 +30,25 @@ struct Camera {
     direction: Vec3d,
 }
 
+impl Vec3d {
+    pub fn normalize(&self) -> Vec3d {
+        let mut norm: Vec3d = self.clone();
+        let module = self.x*self.x + self.y*self.y + self.z*self.z;
+        let mag = module.sqrt();
+        norm.x = norm.x/mag;
+        norm.y = norm.y/mag;
+        norm.z = norm.z/mag;
+        norm
+    }
+}
+
 impl Camera {
     pub fn render(&self, canvas: &mut Canvas) {
-        let mut color = Color { blue: 0, green: 0, red: 0 };
+        let mut color = Color { blue: 0., green: 0., red: 0. };
         for x in 0..canvas.width {
-            color.green = (x * 256 / canvas.width).try_into().unwrap();
+            color.green = (x as f32 / canvas.width as f32);
             for y in 0..canvas.height {
-                color.red = (y * 256 / canvas.height).try_into().unwrap();
+                color.red = (y as f32 / canvas.height as f32);
                 canvas.draw_pixel(x, y, color);
             }
         }
@@ -44,6 +57,12 @@ impl Camera {
 
 #[derive(Clone, Copy)]
 struct Color {
+    red: f32,
+    green: f32,
+    blue: f32,
+}
+
+struct Color8b {
     blue: u8,
     green: u8,
     red: u8,
@@ -64,7 +83,12 @@ impl Canvas {
 
 impl From<Color> for u32 {
     fn from(color: Color) -> Self {
-        unsafe {transmute_copy(&color)}
+        let color8b = Color8b {
+            red:   (color.red   * 256.) as u8,
+            green: (color.green * 256.) as u8,
+            blue:  (color.blue  * 256.) as u8,
+        };
+        unsafe {transmute_copy(&color8b)}
     }
 }
 
@@ -72,6 +96,15 @@ fn main() {
     let canvas = init_canvas();
 
     display_canvas(&canvas);
+}
+
+fn get_ray_color(ray: Ray) -> Color {
+    let mut color = Color {red: 0., green: 0., blue: 0.};
+    let norm_dir = ray.direction.normalize();
+    color.red = norm_dir.x;
+    color.green = norm_dir.y;
+    color.blue = norm_dir.z;
+    return color;
 }
 
 fn init_canvas() -> Canvas {
