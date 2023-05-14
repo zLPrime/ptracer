@@ -1,41 +1,8 @@
-use std::ops;
 use core::convert::From;
 use core::mem::transmute_copy;
+use vec3d::{Point3d, Vec3d};
 
-#[derive(Copy,Clone)]
-pub struct Point3d {
-    pub(crate) x: f32,
-    pub(crate) y: f32,
-    pub(crate) z: f32,
-}
-
-impl Vec3d {
-    pub fn normalize(&self) -> Vec3d {
-        let mut norm: Vec3d = self.clone();
-        let module = self.x*self.x + self.y*self.y + self.z*self.z;
-        let mag = module.sqrt();
-        norm.x = norm.x/mag;
-        norm.y = norm.y/mag;
-        norm.z = norm.z/mag;
-        norm
-    }
-}
-
-impl ops::Add<Vec3d> for Vec3d {
-    type Output = Vec3d;
-    fn add(self, rhs: Vec3d) -> Self::Output {
-        Vec3d { x: self.x + rhs.x, y: self.y + rhs.y, z: self.z + rhs.z }
-    }
-}
-
-impl ops::Sub<Vec3d> for Vec3d {
-    type Output = Vec3d;
-    fn sub(self, rhs: Vec3d) -> Self::Output {
-        Vec3d { x: self.x - rhs.x, y: self.y - rhs.y, z: self.z - rhs.z }
-    }
-}
-
-pub type Vec3d = Point3d;
+pub mod vec3d;
 
 pub struct Ray {
     origin: Point3d,

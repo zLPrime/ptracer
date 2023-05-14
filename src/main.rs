@@ -2,6 +2,7 @@ use minifb::{Key, Window, WindowOptions};
 
 mod primitives;
 use primitives::*;
+use primitives::vec3d::{Point3d, Vec3d};
 
 const WIDTH: usize = 640;
 const HEIGHT: usize = 360;
