@@ -1,3 +1,4 @@
+use std::ops;
 use core::convert::From;
 use core::mem::transmute_copy;
 
@@ -20,22 +21,36 @@ impl Vec3d {
     }
 }
 
+impl ops::Add<Vec3d> for Vec3d {
+    type Output = Vec3d;
+    fn add(self, rhs: Vec3d) -> Self::Output {
+        Vec3d { x: self.x + rhs.x, y: self.y + rhs.y, z: self.z + rhs.z }
+    }
+}
+
+impl ops::Sub<Vec3d> for Vec3d {
+    type Output = Vec3d;
+    fn sub(self, rhs: Vec3d) -> Self::Output {
+        Vec3d { x: self.x - rhs.x, y: self.y - rhs.y, z: self.z - rhs.z }
+    }
+}
+
 pub type Vec3d = Point3d;
 
 pub struct Ray {
     origin: Point3d,
-    pub(crate) direction: Vec3d,
+    pub(super) direction: Vec3d,
 }
 
 pub struct Canvas {
-    pub(crate) width: usize,
-    pub(crate) height: usize,
-    pub(crate) buffer: Vec<u32>,
+    pub(super) width: usize,
+    pub(super) height: usize,
+    pub(super) buffer: Vec<u32>,
 }
 
 pub struct Camera {
-    pub(crate) location: Point3d,
-    pub(crate) direction: Vec3d,
+    pub location: Point3d,
+    pub direction: Vec3d,
 }
 
 impl Camera {
@@ -53,9 +68,9 @@ impl Camera {
 
 #[derive(Clone, Copy)]
 pub struct Color {
-    pub(crate) red: f32,
-    pub(crate) green: f32,
-    pub(crate) blue: f32,
+    pub(super) red: f32,
+    pub(super) green: f32,
+    pub(super) blue: f32,
 }
 
 struct Color8b {
