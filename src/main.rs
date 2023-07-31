@@ -24,7 +24,7 @@ fn get_ray_color(ray: Ray) -> Color {
 
 fn init_canvas() -> Canvas {
     let mut canvas = Canvas::new(WIDTH, HEIGHT);
-    let camera = Camera { location: Point3d { x: 0., y: 0., z: 0. }, direction: Vec3d {x: 0., y: 0., z: -1.}};
+    let camera = Camera { location: Point3d { x: 0., y: 0., z: 0. }, direction: Vec3d {x: 0.5, y: 1., z: 0.25}};
     camera.render(&mut canvas);
     canvas
 }

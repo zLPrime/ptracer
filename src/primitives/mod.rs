@@ -1,6 +1,8 @@
 use core::convert::From;
-use core::mem::transmute_copy;
+use std::mem::transmute_copy;
 use vec3d::{Point3d, Vec3d};
+
+use crate::get_ray_color;
 
 pub mod vec3d;
 
@@ -22,14 +24,24 @@ pub struct Camera {
 
 impl Camera {
     pub fn render(&self, canvas: &mut Canvas) {
-        let mut color = Color { blue: 0., green: 0., red: 0. };
+        let left = self.get_left();
+        let top = self.direction.cross(&left);
+        let top_left = self.direction + top + left;
+        let step_h = 2. / canvas.width as f32;
+        let step_v = 2. / canvas.height as f32;
         for x in 0..canvas.width {
-            color.green = (x as f32 / canvas.width as f32);
+            let current_v = top_left - (left * (step_v * x as f32));
             for y in 0..canvas.height {
-                color.red = (y as f32 / canvas.height as f32);
-                canvas.draw_pixel(x, y, color);
+                let direction = current_v - (top * (step_h * y as f32));
+                let ray = Ray { origin: self.location, direction };
+                canvas.draw_pixel(x, y, get_ray_color(ray));
             }
         }
+    }
+    
+    fn get_left(&self) -> Vec3d {
+        let top = Vec3d::new(0.,0.,1.);
+        top.cross(&self.direction)
     }
 }
 
@@ -44,6 +56,7 @@ struct Color8b {
     blue: u8,
     green: u8,
     red: u8,
+    alpha: u8,
 }
 
 impl Canvas {
@@ -65,6 +78,7 @@ impl From<Color> for u32 {
             red:   (color.red   * 256.) as u8,
             green: (color.green * 256.) as u8,
             blue:  (color.blue  * 256.) as u8,
+            alpha: 0_u8,
         };
         unsafe {transmute_copy(&color8b)}
     }

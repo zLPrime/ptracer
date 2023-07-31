@@ -10,6 +10,10 @@ pub struct Point3d {
 pub type Vec3d = Point3d;
 
 impl Vec3d {
+    pub fn new(x: f32, y: f32, z: f32) -> Vec3d {
+        Vec3d { x, y, z}
+    }
+
     pub fn len_squared(&self) -> f32
     {
         self.x*self.x + self.y*self.y + self.z*self.z
