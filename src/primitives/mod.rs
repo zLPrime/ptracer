@@ -24,15 +24,16 @@ pub struct Camera {
 
 impl Camera {
     pub fn render(&self, canvas: &mut Canvas) {
-        let left = self.get_left();
-        let top = self.direction.cross(&left);
+        let ratio = canvas.width as f32 / canvas.height as f32;
+        let left = self.get_left().normalize() * ratio;
+        let top = self.direction.cross(&left).normalize();
         let top_left = self.direction + top + left;
-        let step_h = 2. / canvas.width as f32;
-        let step_v = 2. / canvas.height as f32;
-        for x in 0..canvas.width {
-            let current_v = top_left - (left * (step_v * x as f32));
-            for y in 0..canvas.height {
-                let direction = current_v - (top * (step_h * y as f32));
+        let step_v = 2. / canvas.width as f32;
+        let step_h = 2. / canvas.height as f32;
+        for y in 0..canvas.height {
+            let current_v = top_left - (top * (step_v * (y as f32)));
+            for x in 0..canvas.width {
+                let direction = current_v - (left * (step_h * x as f32));
                 let ray = Ray { origin: self.location, direction };
                 canvas.draw_pixel(x, y, get_ray_color(ray));
             }
@@ -45,7 +46,7 @@ impl Camera {
     }
 }
 
-#[derive(Clone, Copy)]
+#[derive(Debug, Clone, Copy)]
 pub struct Color {
     pub(super) red: f32,
     pub(super) green: f32,
