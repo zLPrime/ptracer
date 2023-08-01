@@ -6,6 +6,7 @@ use crate::get_ray_color;
 
 pub mod vec3d;
 
+#[derive(Debug)]
 pub struct Ray {
     origin: Point3d,
     pub(super) direction: Vec3d,
@@ -28,13 +29,14 @@ impl Camera {
         let left = self.get_left().normalize() * ratio;
         let top = self.direction.cross(&left).normalize();
         let top_left = self.direction + top + left;
-        let step_v = 2. / canvas.width as f32;
-        let step_h = 2. / canvas.height as f32;
+        let step_v = 2. / (canvas.width - 1) as f32;
+        let step_h = 2. / (canvas.height - 1) as f32;
         for y in 0..canvas.height {
-            let current_v = top_left - (top * (step_v * (y as f32)));
+            let current_v = top_left - (top * (step_h * (y) as f32));
             for x in 0..canvas.width {
-                let direction = current_v - (left * (step_h * x as f32));
+                let direction = current_v - (left * (step_v * (x) as f32));
                 let ray = Ray { origin: self.location, direction };
+                debug!("{:?}", ray);
                 canvas.draw_pixel(x, y, get_ray_color(ray));
             }
         }
