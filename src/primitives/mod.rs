@@ -1,8 +1,10 @@
 use core::convert::From;
 use std::mem::transmute_copy;
 use vec3d::{Point3d, Vec3d};
+use matrix::{Matrix3x3, Matrix3x1};
 
 pub mod vec3d;
+mod matrix;
 
 #[derive(Debug)]
 struct Ray {

@@ -15,8 +15,10 @@ fn main() {
 
 fn init_canvas() -> Canvas {
     let mut canvas = Canvas::new(WIDTH, HEIGHT);
-    let camera = Camera { location: Point3d { x: 0., y: 0., z: 0. }, direction: Vec3d {x: -1., y: 0., z: 0.}};
-    let sphere = Sphere { center: Point3d { x: -2., y: 0., z: 0. }, radius: 1.};
+    let orig_direction = Vec3d {x: -5., y: 0., z: 0.};
+    let direction = orig_direction.rotate_x(0.);
+    let camera = Camera { location: Point3d { x: 0., y: 0., z: 0. }, direction };
+    let sphere = Sphere { center: Point3d { x: -5., y: 0., z: 0. }, radius: 0.75};
     let scene = Scene { spheres: vec![sphere]};
     
     camera.render(&mut canvas, &scene);

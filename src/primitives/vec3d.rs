@@ -1,5 +1,7 @@
 use std::ops;
 
+use super::matrix::{Matrix3x3, Matrix3x1};
+
 #[derive(Debug,Copy,Clone)]
 pub struct Point3d {
     pub(crate) x: f32,
@@ -11,7 +13,7 @@ pub type Vec3d = Point3d;
 
 impl Vec3d {
     pub fn new(x: f32, y: f32, z: f32) -> Vec3d {
-        Vec3d { x, y, z}
+        Vec3d { x, y, z }
     }
 
     pub fn len_squared(&self) -> f32
@@ -33,6 +35,24 @@ impl Vec3d {
             y: self.z * other.x - self.x * other.z,
             z: self.x * other.y - self.y * other.x
         }
+    }
+
+    pub fn rotate_x(&self, theta: f32) -> Vec3d {
+        let rotate_matrix = Matrix3x3::new(
+            theta.cos(), -(theta.sin()), 0.,
+            theta.sin(), theta.cos(), 0.,
+            0., 0., 1.
+        );
+
+        let vec_matrix = Matrix3x1::new(
+            self.x,
+            self.y,
+            self.z
+        );
+
+        let result_matrix = rotate_matrix * vec_matrix;
+
+        Vec3d::new(result_matrix.a11, result_matrix.a21, result_matrix.a31)
     }
 }
 
