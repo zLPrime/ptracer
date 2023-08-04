@@ -4,8 +4,8 @@ mod primitives;
 use primitives::*;
 use primitives::vec3d::{Point3d, Vec3d};
 
-const WIDTH: usize = 4;
-const HEIGHT: usize = 3;
+const WIDTH: usize = 800;
+const HEIGHT: usize = 600;
 
 fn main() {
     let canvas = init_canvas();
@@ -13,19 +13,13 @@ fn main() {
     display_canvas(&canvas);
 }
 
-fn get_ray_color(ray: Ray) -> Color {
-    let mut color = Color {red: 0., green: 0., blue: 0.};
-    let norm_dir = ray.direction.normalize();
-    color.red = norm_dir.x;
-    color.green = norm_dir.y;
-    color.blue = norm_dir.z;
-    return color;
-}
-
 fn init_canvas() -> Canvas {
     let mut canvas = Canvas::new(WIDTH, HEIGHT);
-    let camera = Camera { location: Point3d { x: 0., y: 0., z: 0. }, direction: Vec3d {x: 0., y: 1., z: 0.}};
-    camera.render(&mut canvas);
+    let camera = Camera { location: Point3d { x: 0., y: 0., z: 0. }, direction: Vec3d {x: -1., y: 0., z: 0.}};
+    let sphere = Sphere { center: Point3d { x: -2., y: 0., z: 0. }, radius: 1.};
+    let scene = Scene { spheres: vec![sphere]};
+    
+    camera.render(&mut canvas, &scene);
     canvas
 }
 

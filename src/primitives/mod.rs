@@ -2,14 +2,18 @@ use core::convert::From;
 use std::mem::transmute_copy;
 use vec3d::{Point3d, Vec3d};
 
-use crate::get_ray_color;
-
 pub mod vec3d;
 
 #[derive(Debug)]
-pub struct Ray {
+struct Ray {
     origin: Point3d,
-    pub(super) direction: Vec3d,
+    direction: Vec3d,
+}
+
+#[derive(Debug)]
+pub struct Sphere {
+    pub center: Point3d,
+    pub radius: f32,
 }
 
 pub struct Canvas {
@@ -23,8 +27,12 @@ pub struct Camera {
     pub direction: Vec3d,
 }
 
+pub struct Scene {
+    pub spheres: Vec<Sphere>,
+}
+
 impl Camera {
-    pub fn render(&self, canvas: &mut Canvas) {
+    pub fn render(&self, canvas: &mut Canvas, scene: &Scene) {
         let ratio = canvas.width as f32 / canvas.height as f32;
         let left = self.get_left().normalize() * ratio;
         let top = self.direction.cross(&left).normalize();
@@ -36,8 +44,11 @@ impl Camera {
             for x in 0..canvas.width {
                 let direction = current_v - (left * (step_v * (x) as f32));
                 let ray = Ray { origin: self.location, direction };
-                debug!("{:?}", ray);
-                canvas.draw_pixel(x, y, get_ray_color(ray));
+                let intersect = intersect_ray_spheres(ray, &scene.spheres);
+                match intersect {
+                    Some(_) => canvas.draw_pixel(x, y, Color { red: 1., green: 1., blue: 1. }),
+                    None => {}
+                }
             }
         }
     }
@@ -85,4 +96,41 @@ impl From<Color> for u32 {
         };
         unsafe {transmute_copy(&color8b)}
     }
+}
+
+fn get_ray_color(ray: Ray) -> Color {
+    let mut color = Color {red: 0., green: 0., blue: 0.};
+    let norm_dir = ray.direction.normalize();
+    color.red = norm_dir.x;
+    color.green = norm_dir.y;
+    color.blue = norm_dir.z;
+    return color;
+}
+
+fn intersect_ray_spheres(ray: Ray, spheres: &Vec<Sphere>) -> Option<(f32, f32)> {
+    for sphere in spheres {
+        let intersection = intersect_ray_sphere(&ray, &sphere);
+        match intersection {
+            Some(value) => return Some(value),
+            None => continue,
+        }
+    }
+    None
+}
+
+fn intersect_ray_sphere(ray: &Ray, sphere: &Sphere) -> Option<(f32, f32)> {
+    let oc = ray.origin - sphere.center;
+
+    let k1 = ray.direction * ray.direction;
+    let k2 = oc * ray.direction * 2.;
+    let k3 = oc * oc - sphere.radius * sphere.radius;
+
+    let discr = k2 * k2 - 4. * k1 * k3;
+    if (discr < 0.){
+        return None
+    }
+
+    let t1 = (-k2 + discr.sqrt()) / (2. * k1);
+    let t2 = (-k2 - discr.sqrt()) / (2. * k1);
+    return Some((t1, t2))
 }

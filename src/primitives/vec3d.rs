@@ -61,6 +61,13 @@ impl ops::Sub<Vec3d> for Vec3d {
     }
 }
 
+impl ops::Mul<Vec3d> for Vec3d {
+    type Output = f32;
+    fn mul(self, rhs: Vec3d) -> Self::Output {
+        self.x * rhs.x + self.y * rhs.y + self.z * rhs.z
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use crate::Vec3d;
