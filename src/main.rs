@@ -46,8 +46,12 @@ fn display(scene: &mut Scene) {
     while window.is_open() && !window.is_key_down(Key::Escape) {
         
         scene.camera.render(&mut canvas, &scene);
-        
-        scene.camera.rotate_x(0.05);
+        let step = 0.05_f32;
+        if (window.is_key_down(Key::Left)) {
+            scene.camera.rotate_x(step);
+        } else if (window.is_key_down(Key::Right)) {
+            scene.camera.rotate_x(-step);
+        }
         
         // We unwrap here as we want this code to exit if it fails. Real applications may want to handle this in a different way
         window
