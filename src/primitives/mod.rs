@@ -31,6 +31,7 @@ pub struct Camera {
 
 pub struct Scene {
     pub spheres: Vec<Sphere>,
+    pub camera: Camera,
 }
 
 impl Camera {
@@ -53,6 +54,10 @@ impl Camera {
                 }
             }
         }
+    }
+
+    pub fn rotate_x(&mut self, theta: f32) {
+        self.direction = self.direction.rotate_x(theta)
     }
     
     fn get_left(&self) -> Vec3d {
