@@ -41,19 +41,19 @@ fn display(scene: &mut Scene) {
     // Limit to max ~60 fps update rate
     window.limit_update_rate(Some(std::time::Duration::from_micros(16600)));
 
-    let mut canvas: Canvas;
+    let mut canvas = init_canvas();
 
     while window.is_open() && !window.is_key_down(Key::Escape) {
         
-        canvas = init_canvas();
-
         scene.camera.render(&mut canvas, &scene);
         
-        scene.camera.rotate_x(0.01);
-
+        scene.camera.rotate_x(0.05);
+        
         // We unwrap here as we want this code to exit if it fails. Real applications may want to handle this in a different way
         window
-            .update_with_buffer(&canvas.buffer, canvas.width, canvas.height)
-            .unwrap();
+        .update_with_buffer(&canvas.buffer, canvas.width, canvas.height)
+        .unwrap();
+    
+        canvas.clear();
     }
 }

@@ -85,11 +85,13 @@ impl Canvas {
         let mut buffer = vec![0_u32; width * height];
         Self { height, width, buffer }
     }
-}
 
-impl Canvas {
     pub fn draw_pixel(&mut self, x: usize, y: usize, color: Color) {
         self.buffer[x + y * self.width] = color.into();
+    }
+
+    pub fn clear(&mut self) {
+        self.buffer.iter_mut().for_each(|v| *v = 0);
     }
 }
 
