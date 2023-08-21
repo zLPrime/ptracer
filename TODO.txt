@@ -1,4 +1,5 @@
 + draw a buffer on a canvas
-- raytrace a sphere with just constant color
++ raytrace a sphere with just constant color
 - bounce off the ray to the light source
 + optimize vector division: return (1/t) * v;
+- fix drawing a sphere twice (before and behind the camera)

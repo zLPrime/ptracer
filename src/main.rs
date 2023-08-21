@@ -38,6 +38,8 @@ fn display(scene: &mut Scene) {
         panic!("{}", e);
     });
 
+    let r_step = 0.05_f32;
+    let m_step = 0.2_f32;
     // Limit to max ~60 fps update rate
     window.limit_update_rate(Some(std::time::Duration::from_micros(16600)));
 
@@ -46,11 +48,22 @@ fn display(scene: &mut Scene) {
     while window.is_open() && !window.is_key_down(Key::Escape) {
         
         scene.camera.render(&mut canvas, &scene);
-        let step = 0.05_f32;
         if (window.is_key_down(Key::Left)) {
-            scene.camera.rotate_x(step);
+            scene.camera.rotate_x(r_step);
         } else if (window.is_key_down(Key::Right)) {
-            scene.camera.rotate_x(-step);
+            scene.camera.rotate_x(-r_step);
+        }
+
+        if (window.is_key_down(Key::W)) {
+            scene.camera.move_forward(m_step);
+        } else if (window.is_key_down(Key::S)) {
+            scene.camera.move_forward(-m_step);
+        }
+
+        if (window.is_key_down(Key::A)) {
+            scene.camera.move_left(m_step);
+        } else if (window.is_key_down(Key::D)) {
+            scene.camera.move_left(-m_step);
         }
         
         // We unwrap here as we want this code to exit if it fails. Real applications may want to handle this in a different way

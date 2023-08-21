@@ -47,10 +47,10 @@ impl Camera {
             for x in 0..canvas.width {
                 let direction = current_v - (left * (step_v * (x) as f32));
                 let ray = Ray { origin: self.location, direction };
-                let intersect = intersect_ray_spheres(ray, &scene.spheres);
+                let intersect = intersect_ray_spheres(&ray, &scene.spheres);
                 match intersect {
                     Some(_) => canvas.draw_pixel(x, y, Color { red: 1., green: 1., blue: 1. }),
-                    None => {}
+                    None => canvas.draw_pixel(x, y, get_ray_color(&ray))
                 }
             }
         }
@@ -58,6 +58,14 @@ impl Camera {
 
     pub fn rotate_x(&mut self, theta: f32) {
         self.direction = self.direction.rotate_x(theta)
+    }
+
+    pub fn move_forward(&mut self, step: f32) {
+        self.location = self.location + self.direction.normalize() * step;
+    }
+    
+    pub fn move_left(&mut self, step: f32) {
+        self.location = self.location + self.get_left().normalize() * step;
     }
     
     fn get_left(&self) -> Vec3d {
@@ -107,7 +115,7 @@ impl From<Color> for u32 {
     }
 }
 
-fn get_ray_color(ray: Ray) -> Color {
+fn get_ray_color(ray: &Ray) -> Color {
     let mut color = Color {red: 0., green: 0., blue: 0.};
     let norm_dir = ray.direction.normalize();
     color.red = norm_dir.x;
@@ -116,7 +124,7 @@ fn get_ray_color(ray: Ray) -> Color {
     return color;
 }
 
-fn intersect_ray_spheres(ray: Ray, spheres: &Vec<Sphere>) -> Option<(f32, f32)> {
+fn intersect_ray_spheres(ray: &Ray, spheres: &Vec<Sphere>) -> Option<(f32, f32)> {
     for sphere in spheres {
         let intersection = intersect_ray_sphere(&ray, &sphere);
         match intersection {
