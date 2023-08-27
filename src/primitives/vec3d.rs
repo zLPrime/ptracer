@@ -67,6 +67,14 @@ impl ops::Mul<f32> for Vec3d {
     }
 }
 
+impl ops::Div<f32> for Vec3d {
+    type Output = Vec3d;
+    fn div(self, rhs: f32) -> Self::Output {
+        let div = 1. / rhs;
+        self * div
+    }
+}
+
 impl ops::Add<Vec3d> for Vec3d {
     type Output = Vec3d;
     fn add(self, rhs: Vec3d) -> Self::Output {
@@ -87,6 +95,7 @@ impl ops::Mul<Vec3d> for Vec3d {
         self.x * rhs.x + self.y * rhs.y + self.z * rhs.z
     }
 }
+
 
 #[cfg(test)]
 mod tests {

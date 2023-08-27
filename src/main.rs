@@ -14,7 +14,7 @@ fn main() {
 }
 
 fn init_canvas() -> Canvas {
-    let mut canvas = Canvas::new(WIDTH, HEIGHT);
+    let canvas = Canvas::new(WIDTH, HEIGHT);
     canvas
 }
 
@@ -48,19 +48,19 @@ fn display(scene: &mut Scene) {
     while window.is_open() && !window.is_key_down(Key::Escape) {
         
         scene.camera.render(&mut canvas, &scene);
-        if (window.is_key_down(Key::Left)) {
+        if window.is_key_down(Key::Left) {
             scene.camera.rotate_x(r_step);
         } else if (window.is_key_down(Key::Right)) {
             scene.camera.rotate_x(-r_step);
         }
 
-        if (window.is_key_down(Key::W)) {
+        if window.is_key_down(Key::W) {
             scene.camera.move_forward(m_step);
         } else if (window.is_key_down(Key::S)) {
             scene.camera.move_forward(-m_step);
         }
 
-        if (window.is_key_down(Key::A)) {
+        if window.is_key_down(Key::A) {
             scene.camera.move_left(m_step);
         } else if (window.is_key_down(Key::D)) {
             scene.camera.move_left(-m_step);

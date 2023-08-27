@@ -18,6 +18,12 @@ pub struct Sphere {
     pub radius: f32,
 }
 
+impl Sphere {
+    pub fn get_normal(&self, point: Point3d) -> Vec3d {
+        return (point - self.center) / self.radius;
+    }
+}
+
 pub struct Canvas {
     pub(super) width: usize,
     pub(super) height: usize,
@@ -47,11 +53,8 @@ impl Camera {
             for x in 0..canvas.width {
                 let direction = current_v - (left * (step_v * (x) as f32));
                 let ray = Ray { origin: self.location, direction };
-                let intersect = intersect_ray_spheres(&ray, &scene.spheres);
-                match intersect {
-                    Some(_) => canvas.draw_pixel(x, y, Color { red: 1., green: 1., blue: 1. }),
-                    None => canvas.draw_pixel(x, y, get_ray_color(&ray))
-                }
+                let ray_color = get_ray_color(&ray, &scene.spheres);
+                canvas.draw_pixel(x, y, ray_color);
             }
         }
     }
@@ -115,7 +118,7 @@ impl From<Color> for u32 {
     }
 }
 
-fn get_ray_color(ray: &Ray) -> Color {
+fn get_background_color(ray: &Ray) -> Color {
     let mut color = Color {red: 0., green: 0., blue: 0.};
     let norm_dir = ray.direction.normalize();
     color.red = norm_dir.x;
@@ -124,15 +127,20 @@ fn get_ray_color(ray: &Ray) -> Color {
     return color;
 }
 
-fn intersect_ray_spheres(ray: &Ray, spheres: &Vec<Sphere>) -> Option<(f32, f32)> {
+fn get_ray_color(ray: &Ray, spheres: &Vec<Sphere>) -> Color {
     for sphere in spheres {
         let intersection = intersect_ray_sphere(&ray, &sphere);
         match intersection {
-            Some(value) => return Some(value),
+            Some((value1, value2)) => {
+                let value = f32::min(value1, value2);
+                let hit_point = ray.origin + ray.direction * value;
+                let normal = sphere.get_normal(hit_point);
+                return Color { red: normal.x, green: normal.y, blue: normal.z }
+            },
             None => continue,
         }
     }
-    None
+    return get_background_color(ray)
 }
 
 fn intersect_ray_sphere(ray: &Ray, sphere: &Sphere) -> Option<(f32, f32)> {
@@ -143,11 +151,17 @@ fn intersect_ray_sphere(ray: &Ray, sphere: &Sphere) -> Option<(f32, f32)> {
     let k3 = oc * oc - sphere.radius * sphere.radius;
 
     let discr = k2 * k2 - 4. * k1 * k3;
-    if (discr < 0.){
+    if discr < 0. {
         return None
     }
 
     let t1 = (-k2 + discr.sqrt()) / (2. * k1);
     let t2 = (-k2 - discr.sqrt()) / (2. * k1);
+
+    //TODO could do this check earlier to optimize
+    if t1 < 0. && t2 < 0. {
+        return None
+    }
+
     return Some((t1, t2))
 }
