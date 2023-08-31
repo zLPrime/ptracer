@@ -1,8 +1,16 @@
 use minifb::{Key, Window, WindowOptions};
 
 mod primitives;
+mod canvas;
+mod camera;
+mod scene;
+mod sphere;
 use primitives::*;
 use primitives::vec3d::{Point3d, Vec3d};
+use canvas::Canvas;
+use camera::Camera;
+use scene::Scene;
+use sphere::Sphere;
 
 const WIDTH: usize = 800;
 const HEIGHT: usize = 600;

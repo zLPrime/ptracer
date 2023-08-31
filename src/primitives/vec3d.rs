@@ -54,6 +54,10 @@ impl Vec3d {
 
         Vec3d::new(result_matrix.a11, result_matrix.a21, result_matrix.a31)
     }
+
+    pub fn random() -> Vec3d {
+        Vec3d::new(rand::random(), rand::random(), rand::random())
+    }
 }
 
 impl ops::Mul<f32> for Vec3d {
