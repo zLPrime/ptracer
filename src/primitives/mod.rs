@@ -19,6 +19,12 @@ pub struct Color {
     pub(super) blue: f32,
 }
 
+impl Color {
+    pub fn new(red: f32, green: f32, blue: f32) -> Color {
+        Color { red, green, blue }
+    }
+}
+
 impl ops::Mul<Color> for Color {
     type Output = Color;
     fn mul(self, rhs: Color) -> Self::Output {

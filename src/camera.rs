@@ -27,7 +27,7 @@ impl Camera {
                     origin: self.location,
                     direction,
                 };
-                let ray_color = get_ray_color(&ray, &scene.spheres, 1);
+                let ray_color = get_ray_color(&ray, &scene, 3);
                 canvas.draw_pixel(x, y, ray_color);
             }
         }

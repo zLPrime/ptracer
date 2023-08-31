@@ -1,3 +1,5 @@
+use crate::primitives::Color;
+
 use super::primitives::vec3d::{Point3d, Vec3d};
 use super::primitives::Ray;
 
@@ -5,6 +7,7 @@ use super::primitives::Ray;
 pub struct Sphere {
     pub center: Point3d,
     pub radius: f32,
+    pub color: Color,
 }
 
 impl Sphere {
@@ -12,7 +15,7 @@ impl Sphere {
         return (point - self.center) / self.radius;
     }
 
-    pub fn intersect(&self, ray: &Ray) -> Option<(f32, f32)> {
+    pub fn intersect(&self, ray: &Ray) -> Option<f32> {
         let oc = ray.origin - self.center;
     
         let k1 = ray.direction * ray.direction;
@@ -28,10 +31,10 @@ impl Sphere {
         let t2 = (-k2 - discr.sqrt()) / (2. * k1);
     
         //TODO could do this check earlier to optimize
-        if t1 < 0. && t2 < 0. {
+        if t1 < 0.001 && t2 < 0.001 {
             return None
         }
     
-        return Some((t1, t2))
+        return Some(f32::min(t1, t2))
     }
 }
