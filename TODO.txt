@@ -5,4 +5,4 @@
 + fix drawing a sphere twice (before and behind the camera)
 + organize code
 + let camera just span rays, and scene do the rest
-- fix coloured shadow
++ fix coloured shadow

@@ -17,9 +17,16 @@ fn get_background_color(ray: &Ray) -> Color {
     return color;
 }
 
-fn get_lightness(ray: &Ray, light_source: &Vec3d) -> Color {
+fn get_lightness(ray: &Ray, scene: &Scene) -> Color {
+    for sphere in &scene.spheres {
+        let intersection = sphere.intersect(ray);
+        match intersection {
+            Some(_) => return Color::new(0., 0., 0.),
+            None => {}
+        }
+    }
     let norm_dir = ray.direction.normalize();
-    let lightness = f32::max(0., norm_dir * *light_source);
+    let lightness = f32::max(0., norm_dir * scene.light_source);
     let color = Color::new(lightness, lightness, lightness);
     return color;
 }
@@ -56,5 +63,5 @@ pub fn get_ray_color(ray: &Ray, scene: &Scene, depth: u8) -> Color {
         }
     }
     // return get_background_color(ray);
-    return get_lightness(ray, &scene.light_source)
+    return get_lightness(ray, &scene)
 }
