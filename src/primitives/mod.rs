@@ -36,6 +36,17 @@ impl ops::Mul<Color> for Color {
     }
 }
 
+impl ops::Mul<f32> for Color {
+    type Output = Color;
+    fn mul(self, rhs: f32) -> Self::Output {
+        Color {
+            red: self.red * rhs,
+            green: self.green * rhs,
+            blue: self.blue * rhs
+        }
+    }
+}
+
 pub struct Color8b {
     blue: u8,
     green: u8,

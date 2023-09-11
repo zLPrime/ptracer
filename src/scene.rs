@@ -52,12 +52,19 @@ pub fn get_ray_color(ray: &Ray, scene: &Scene, depth: u8) -> Color {
             Some(sphere) => {
                 let hit_point = ray.origin + ray.direction * final_value;
                 let normal = sphere.get_normal(hit_point);
-                let mut bounce_direction = Vec3d::random();
-                if normal * bounce_direction < 0. {
-                    bounce_direction = bounce_direction * -1.;
-                }
+                let bounce_direction =
+                    if depth > 1 {
+                        let mut bd = Vec3d::random();
+                        if normal * bd < 0. {
+                            bd = bd * -1.;
+                        }
+                        bd
+                    }
+                    else {
+                        scene.light_source
+                    };
                 let bounce_ray = Ray { origin: hit_point, direction: bounce_direction };
-                return sphere.color * get_ray_color(&bounce_ray, scene, depth - 1)
+                return sphere.color * get_ray_color(&bounce_ray, scene, depth - 1) * (bounce_direction * normal)
             },
             None => {},
         }

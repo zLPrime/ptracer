@@ -1,5 +1,7 @@
 use std::ops;
 
+use rand::{thread_rng, Rng};
+
 use super::matrix::{Matrix3x3, Matrix3x1};
 
 #[derive(Debug,Copy,Clone)]
@@ -56,7 +58,8 @@ impl Vec3d {
     }
 
     pub fn random() -> Vec3d {
-        Vec3d::new(rand::random(), rand::random(), rand::random())
+        let mut rng = thread_rng();
+        Vec3d::new(rng.gen_range(-1.0..1.0), rng.gen_range(-1.0..1.0), rng.gen_range(-1.0..1.0))
     }
 }
 

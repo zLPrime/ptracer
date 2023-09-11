@@ -30,11 +30,13 @@ fn init_scene() -> Scene {
     let orig_direction = Vec3d {x: -5., y: 0., z: 0.};
     let direction = orig_direction.rotate_x(0.);
     let camera = Camera { location: Point3d { x: 0., y: 0., z: 0. }, direction };
-    let small_sphere = Sphere { center: Point3d { x: -5., y: 0., z: 0. }, radius: 0.75, color: Color::new(1., 0.3, 0.3) };
-    let big_sphere = Sphere { center: Point3d { x: -5., y: 0., z: -50. }, radius: 49.25, color: Color::new(0.2, 0.2, 0.2) };
-    let light_source = Vec3d::new(1., 1., 0.).normalize();
+    let small_sphere = Sphere { center: Point3d { x: -5., y: -0.75, z: 0. }, radius: 0.75, color: Color::new(1., 0.3, 0.3) };
+    let small_sphere_2 = Sphere { center: Point3d { x: -5., y: 0.75, z: 0. }, radius: 0.75, color: Color::new(0.3, 1.0, 0.3) };
+    let big_sphere = Sphere { center: Point3d { x: -5., y: 0., z: -50. }, radius: 49.25, color: Color::new(0.8, 0.8, 0.8) };
+    let light_source = Vec3d::new(1., 0., 0.5).normalize();
     let scene = Scene { spheres: vec![small_sphere
-         , big_sphere
+        , small_sphere_2
+        , big_sphere
          ], camera, light_source };
     scene
 }
