@@ -1,4 +1,5 @@
 use crate::primitives::vec3d::Vec3d;
+use crate::sphere::MaterialKind;
 
 use super::primitives::{Color, Ray};
 
@@ -54,21 +55,38 @@ pub fn get_ray_color(ray: &Ray, scene: &Scene, depth: u8) -> Color {
                 let normal = sphere.get_normal(hit_point);
                 let bounce_direction =
                     if depth > 1 {
-                        let mut bd = Vec3d::random();
-                        if normal * bd < 0. {
-                            bd = bd * -1.;
-                        }
-                        bd
+                        get_bounce_direction(ray.direction, normal, sphere.material.material_kind)
                     }
                     else {
                         scene.light_source
                     };
                 let bounce_ray = Ray { origin: hit_point, direction: bounce_direction };
-                return sphere.color * get_ray_color(&bounce_ray, scene, depth - 1) * (bounce_direction * normal)
+                return sphere.material.color * get_ray_color(&bounce_ray, scene, depth - 1) * (bounce_direction * normal)
             },
             None => {},
         }
     }
     // return get_background_color(ray);
     return get_lightness(ray, &scene)
+}
+
+
+// w = v - 2 * (v ∙ n) * n
+fn get_bounce_direction(ray_direction: Vec3d, normal: Vec3d, material_kind: MaterialKind) -> Vec3d {
+    match material_kind {
+        MaterialKind::Diffuse => {
+            let mut bd = Vec3d::random();
+            if normal * bd < 0. {
+                bd = bd * -1.;
+            }
+            bd
+        },
+        MaterialKind::Glossy => {
+            let n = normal;
+            let v = ray_direction;
+            let w = v - 2. * v.dot(&n) * n;
+            w
+        }
+    }
+
 }

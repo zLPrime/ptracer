@@ -7,7 +7,7 @@ use super::primitives::Ray;
 pub struct Sphere {
     pub center: Point3d,
     pub radius: f32,
-    pub color: Color,
+    pub material: Material,
 }
 
 impl Sphere {
@@ -37,4 +37,16 @@ impl Sphere {
     
         return Some(f32::min(t1, t2))
     }
+}
+
+#[derive(Debug, Clone, Copy)]
+pub enum MaterialKind {
+    Glossy,
+    Diffuse,
+}
+
+#[derive(Debug, Clone, Copy)]
+pub struct Material {
+    pub material_kind: MaterialKind,
+    pub color: Color,
 }

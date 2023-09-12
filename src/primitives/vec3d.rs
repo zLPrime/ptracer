@@ -39,6 +39,10 @@ impl Vec3d {
         }
     }
 
+    pub fn dot(&self, other: &Vec3d) -> f32 {
+        self.x * other.x + self.y * other.y + self.z * other.z
+    }
+
     pub fn rotate_x(&self, theta: f32) -> Vec3d {
         let rotate_matrix = Matrix3x3::new(
             theta.cos(), -(theta.sin()), 0.,
@@ -74,6 +78,13 @@ impl ops::Mul<f32> for Vec3d {
     }
 }
 
+impl ops::Mul<Vec3d> for f32 {
+    type Output = Vec3d;
+    fn mul(self, rhs: Vec3d) -> Self::Output {
+        rhs * self
+    }
+}
+
 impl ops::Div<f32> for Vec3d {
     type Output = Vec3d;
     fn div(self, rhs: f32) -> Self::Output {
@@ -102,7 +113,6 @@ impl ops::Mul<Vec3d> for Vec3d {
         self.x * rhs.x + self.y * rhs.y + self.z * rhs.z
     }
 }
-
 
 #[cfg(test)]
 mod tests {
