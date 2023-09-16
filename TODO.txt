@@ -6,3 +6,8 @@
 + organize code
 + let camera just span rays, and scene do the rest
 + fix coloured shadow
++ introduce multisampling
+- optimize using random generator
+- add triangles
+- add support for a 3d scene format
+- add light sources

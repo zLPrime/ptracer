@@ -65,6 +65,10 @@ impl Vec3d {
         let mut rng = thread_rng();
         Vec3d::new(rng.gen_range(-1.0..1.0), rng.gen_range(-1.0..1.0), rng.gen_range(-1.0..1.0))
     }
+
+    pub fn random_unit() -> Vec3d {
+        Self::random().normalize()
+    }
 }
 
 impl ops::Mul<f32> for Vec3d {

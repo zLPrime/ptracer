@@ -54,12 +54,7 @@ pub fn get_ray_color(ray: &Ray, scene: &Scene, depth: u8) -> Color {
                 let hit_point = ray.origin + ray.direction * final_value;
                 let normal = sphere.get_normal(hit_point);
                 let bounce_direction =
-                    if depth > 1 {
-                        get_bounce_direction(ray.direction, normal, sphere.material.material_kind)
-                    }
-                    else {
-                        scene.light_source
-                    };
+                    get_bounce_direction(ray.direction, normal, sphere.material.material_kind);
                 let bounce_ray = Ray { origin: hit_point, direction: bounce_direction };
                 return sphere.material.color * get_ray_color(&bounce_ray, scene, depth - 1) * (bounce_direction * normal)
             },
@@ -75,11 +70,11 @@ pub fn get_ray_color(ray: &Ray, scene: &Scene, depth: u8) -> Color {
 fn get_bounce_direction(ray_direction: Vec3d, normal: Vec3d, material_kind: MaterialKind) -> Vec3d {
     match material_kind {
         MaterialKind::Diffuse => {
-            let mut bd = Vec3d::random();
+            let mut bd = Vec3d::random_unit();
             if normal * bd < 0. {
                 bd = bd * -1.;
             }
-            bd
+            bd + 0.5 * normal
         },
         MaterialKind::Glossy => {
             let n = normal;
