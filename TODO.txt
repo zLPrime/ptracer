@@ -7,7 +7,9 @@
 + let camera just span rays, and scene do the rest
 + fix coloured shadow
 + introduce multisampling
++ print FPS
 - optimize using random generator
 - add triangles
 - add support for a 3d scene format
 - add light sources
+- make UI asynchronous to rendering

@@ -1,8 +1,6 @@
 use std::ops;
 
-use rand::{thread_rng, Rng};
-
-use super::matrix::{Matrix3x3, Matrix3x1};
+use super::{matrix::{Matrix3x3, Matrix3x1}, rand};
 
 #[derive(Debug,Copy,Clone)]
 pub struct Point3d {
@@ -62,8 +60,7 @@ impl Vec3d {
     }
 
     pub fn random() -> Vec3d {
-        let mut rng = thread_rng();
-        Vec3d::new(rng.gen_range(-1.0..1.0), rng.gen_range(-1.0..1.0), rng.gen_range(-1.0..1.0))
+        Vec3d::new(rand::get_random_float_neg_pos(1.0), rand::get_random_float_neg_pos(1.0), rand::get_random_float_neg_pos(1.0))
     }
 
     pub fn random_unit() -> Vec3d {

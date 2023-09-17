@@ -1,6 +1,4 @@
-use rand::{thread_rng, Rng};
-
-use crate::primitives::Color;
+use crate::primitives::{Color, rand};
 
 use super::scene::get_ray_color;
 
@@ -17,7 +15,6 @@ pub struct Camera {
 
 impl Camera {
     pub fn render(&self, canvas: &mut Canvas, scene: &Scene) {
-        let mut rng = thread_rng();
         let ratio = canvas.width as f32 / canvas.height as f32;
         let left = self.get_left().normalize() * ratio;
         let top = self.direction.cross(&left).normalize();
@@ -31,8 +28,8 @@ impl Camera {
             for x in 0..canvas.width {
                 let mut color = Color::new(0., 0., 0.);
                 for _ in 1..4 {
-                    let h_deviation = rng.gen_range(-half_step_h..half_step_h);
-                    let v_deviation = rng.gen_range(-half_step_v..half_step_v);
+                    let h_deviation = rand::get_random_float_neg_pos(half_step_h);
+                    let v_deviation = rand::get_random_float_neg_pos(half_step_v);
                     let direction = current_v - left * (step_v * (x) as f32 + v_deviation) + top * h_deviation;
                     let ray = Ray {
                         origin: self.location,

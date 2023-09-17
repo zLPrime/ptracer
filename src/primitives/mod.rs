@@ -4,6 +4,7 @@ use vec3d::{Point3d, Vec3d};
 use std::ops;
 
 pub mod vec3d;
+pub mod rand;
 mod matrix;
 
 #[derive(Debug)]
@@ -47,6 +48,7 @@ impl ops::Mul<f32> for Color {
     }
 }
 
+// TODO remove it
 impl ops::Add<Color> for Color {
     type Output = Color;
     fn add(self, rhs: Color) -> Self::Output {

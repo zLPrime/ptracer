@@ -1,3 +1,5 @@
+use std::time::Instant;
+
 use minifb::{Key, Window, WindowOptions};
 
 mod primitives;
@@ -63,30 +65,36 @@ fn display(scene: &mut Scene) {
     let mut canvas = init_canvas();
 
     while window.is_open() && !window.is_key_down(Key::Escape) {
-        
+        let beginning = Instant::now();
+
         scene.camera.render(&mut canvas, &scene);
         if window.is_key_down(Key::Left) {
             scene.camera.rotate_x(r_step);
-        } else if (window.is_key_down(Key::Right)) {
+        } else if window.is_key_down(Key::Right) {
             scene.camera.rotate_x(-r_step);
         }
 
         if window.is_key_down(Key::W) {
             scene.camera.move_forward(m_step);
-        } else if (window.is_key_down(Key::S)) {
+        } else if window.is_key_down(Key::S) {
             scene.camera.move_forward(-m_step);
         }
 
         if window.is_key_down(Key::A) {
             scene.camera.move_left(m_step);
-        } else if (window.is_key_down(Key::D)) {
+        } else if window.is_key_down(Key::D) {
             scene.camera.move_left(-m_step);
         }
         
         // We unwrap here as we want this code to exit if it fails. Real applications may want to handle this in a different way
         window
-        .update_with_buffer(&canvas.buffer, canvas.width, canvas.height)
-        .unwrap();
+            .update_with_buffer(&canvas.buffer, canvas.width, canvas.height)
+            .unwrap();
+        
+        let elapsed = beginning.elapsed().as_millis();
+        let fps = 1000 / elapsed;
+        let s = format!("{} FPS", fps);
+        window.set_title(s.as_str());
     
         canvas.clear();
     }
