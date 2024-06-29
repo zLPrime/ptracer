@@ -27,7 +27,7 @@ impl Camera {
             let current_v = top_left - (top * (step_h * (y) as f32));
             for x in 0..canvas.width {
                 let mut color = Color::new(0., 0., 0.);
-                for _ in 1..4 {
+                for _ in 0..4 {
                     let h_deviation = rand::get_random_float_neg_pos(half_step_h);
                     let v_deviation = rand::get_random_float_neg_pos(half_step_v);
                     let direction = current_v - left * (step_v * (x) as f32 + v_deviation) + top * h_deviation;
