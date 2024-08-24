@@ -1,5 +1,4 @@
-use super::sphere::Sphere;
-use super::primitives::{Color, Ray};
+use super::primitives::Color;
 
 pub struct Canvas {
     pub(super) width: usize,

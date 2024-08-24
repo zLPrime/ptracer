@@ -1,10 +1,9 @@
 use crate::primitives::vec3d::Vec3d;
-use crate::sphere::MaterialKind;
-
-use super::primitives::{Color, Ray};
-
-use super::camera::Camera;
-use super::sphere::Sphere;
+use crate::surface::material::MaterialKind;
+use crate::primitives::{Color, Ray};
+use crate::surface::sphere::Sphere;
+use crate::surface::Surface;
+use crate::camera::Camera;
 
 pub struct Scene {
     pub spheres: Vec<Sphere>,
@@ -56,7 +55,7 @@ pub fn get_ray_color(ray: &Ray, scene: &Scene, depth: u8) -> Color {
                 let bounce_direction =
                     get_bounce_direction(ray.direction, normal, sphere.material.material_kind);
                 let bounce_ray = Ray { origin: hit_point, direction: bounce_direction };
-                return sphere.material.color * get_ray_color(&bounce_ray, scene, depth - 1) * (bounce_direction * normal)
+                return sphere.material.color * get_ray_color(&bounce_ray, scene, depth - 1)
             },
             None => {},
         }

@@ -5,6 +5,7 @@
 ## Current functionality
 
 - raytracing spheres
+- camera move
 - directional lihgt source
 - two types of material
 
