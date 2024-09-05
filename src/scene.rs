@@ -2,11 +2,13 @@ use crate::primitives::vec3d::Vec3d;
 use crate::surface::material::MaterialKind;
 use crate::primitives::{Color, Ray};
 use crate::surface::sphere::Sphere;
-use crate::surface::Surface;
 use crate::camera::Camera;
+use crate::surface::triangle::Triangle;
+use crate::surface::Surface;
 
 pub struct Scene {
     pub spheres: Vec<Sphere>,
+    pub triangles: Vec<Triangle>,
     pub camera: Camera,
     pub light_source: Vec3d,
 }
@@ -18,12 +20,9 @@ fn get_background_color(ray: &Ray) -> Color {
 }
 
 fn get_lightness(ray: &Ray, scene: &Scene) -> Color {
-    for sphere in &scene.spheres {
-        let intersection = sphere.intersect(ray);
-        match intersection {
-            Some(_) => return Color::new(0., 0., 0.),
-            None => {}
-        }
+    if get_any_intersection(ray, &scene.spheres)
+    || get_any_intersection(ray, &scene.triangles) {
+        return Color::new(0., 0., 0.)
     }
     let norm_dir = ray.direction.normalize();
     let lightness = f32::max(0., norm_dir * scene.light_source);
@@ -31,41 +30,76 @@ fn get_lightness(ray: &Ray, scene: &Scene) -> Color {
     return color;
 }
 
+fn get_any_intersection<T: Surface>(ray: &Ray, surfaces: &[T]) -> bool {
+    for surface in surfaces {
+        let intersection = surface.intersect(ray);
+        match intersection {
+            Some(_) => return true,
+            None => {}
+        }
+    }
+    return false
+}
+
+fn get_closest_ditance<'a, 'b, T: Surface>(ray: &'a Ray, surfaces: &'b [T]) -> (f32, Option<&'b T>) {
+    let mut closest_surface  = None;
+    let mut closest_distance = f32::MAX;
+    for surface in surfaces {
+        let distance = surface.intersect(ray);
+        match distance {
+            Some(new_distance) => {
+                closest_distance = f32::min(closest_distance, new_distance);
+                if closest_distance == new_distance {
+                    closest_surface = Some(surface);
+                }
+            }
+            None => continue
+        }
+    }
+    return (closest_distance, closest_surface)
+}
+
 //TODO move it to camera?
 pub fn get_ray_color(ray: &Ray, scene: &Scene, depth: u8) -> Color {
     if depth > 0 {
-        let mut final_value = f32::MAX;
-        let mut final_sphere = None;
-        for sphere in &scene.spheres {
-            let intersection = sphere.intersect(&ray);
-            match intersection {
-                Some(new_value) => {
-                    final_value = f32::min(final_value, new_value);
-                    if final_value == new_value {
-                        final_sphere = Some(sphere);
-                    }
-                }
-                None => continue,
+        let (dist_to_sphere, sphere) = get_closest_ditance(ray, &scene.spheres);
+        let (dist_to_triangle, triangle) = get_closest_ditance(ray, &scene.triangles);
+
+        if dist_to_sphere < dist_to_triangle {
+            match sphere {
+                Some(surface) => {
+                    let (material, bounce_ray) = reflect(ray, dist_to_sphere, surface);
+                    return material.color * get_ray_color(&bounce_ray, scene, depth - 1)
+                },
+                None => {},
             }
-        }
-        match final_sphere {
-            Some(sphere) => {
-                let hit_point = ray.origin + ray.direction * final_value;
-                let normal = sphere.get_normal(hit_point);
-                let bounce_direction =
-                    get_bounce_direction(ray.direction, normal, sphere.material.material_kind);
-                let bounce_ray = Ray { origin: hit_point, direction: bounce_direction };
-                return sphere.material.color * get_ray_color(&bounce_ray, scene, depth - 1)
-            },
-            None => {},
+        } else {
+            match triangle {
+                Some(surface) => {
+                    let (material, bounce_ray) = reflect(ray, dist_to_triangle, surface);
+                    return material.color * get_ray_color(&bounce_ray, scene, depth - 1)
+                },
+                None => {},
+            }
         }
     }
     // return get_background_color(ray);
     return get_lightness(ray, &scene)
 }
 
+fn reflect<T: Surface>(ray: &Ray, dist_to_surface: f32, surface: &T) -> (crate::Material, Ray) {
+    let hit_point = ray.origin + ray.direction * dist_to_surface;
+    let normal = surface.get_normal(hit_point);
+    let material = surface.get_material();
+    let bounce_direction =
+        get_bounce_direction(ray.direction, normal, material.material_kind);
+    let bounce_ray = Ray { origin: hit_point, direction: bounce_direction };
+    (material, bounce_ray)
+}
+
 
 // w = v - 2 * (v ∙ n) * n
+// TODO: encapsulate in material?
 fn get_bounce_direction(ray_direction: Vec3d, normal: Vec3d, material_kind: MaterialKind) -> Vec3d {
     match material_kind {
         MaterialKind::Diffuse => {
@@ -82,5 +116,4 @@ fn get_bounce_direction(ray_direction: Vec3d, normal: Vec3d, material_kind: Mate
             w
         }
     }
-
 }

@@ -8,7 +8,13 @@ use super::Surface;
 pub struct Sphere {
     pub center: Point3d,
     pub radius: f32,
-    pub material: Material,
+    material: Material,
+}
+
+impl Sphere {
+    pub fn new(center: Point3d, radius: f32, material: Material) -> Self {
+        return Self { center, radius, material }
+    }
 }
 
 impl Surface for Sphere {
@@ -39,5 +45,9 @@ impl Surface for Sphere {
         }
     
         return Some(f32::min(t1, t2))
+    }
+
+    fn get_material(&self) -> Material {
+        return self.material
     }
 }
