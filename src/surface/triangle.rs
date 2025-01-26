@@ -4,7 +4,7 @@ use crate::primitives::Ray;
 use super::material::Material;
 use super::Surface;
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub struct Triangle {
     a: Point3d,
     b: Point3d,

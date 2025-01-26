@@ -1,6 +1,7 @@
 use crate::primitives::vec3d::Vec3d;
 use crate::surface::material::MaterialKind;
 use crate::primitives::{Color, Ray};
+use crate::surface::mesh::Mesh;
 use crate::surface::sphere::Sphere;
 use crate::camera::Camera;
 use crate::surface::triangle::Triangle;
@@ -9,6 +10,7 @@ use crate::surface::Surface;
 pub struct Scene {
     pub spheres: Vec<Sphere>,
     pub triangles: Vec<Triangle>,
+    pub meshes: Vec<Mesh>,
     pub camera: Camera,
     pub light_source: Vec3d,
 }

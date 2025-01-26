@@ -13,6 +13,7 @@ use primitives::vec3d::{Point3d, Vec3d};
 use canvas::Canvas;
 use camera::Camera;
 use scene::Scene;
+use surface::mesh::Mesh;
 use surface::sphere::Sphere;
 use surface::material::*;
 use surface::triangle::Triangle;
@@ -41,8 +42,7 @@ fn init_scene() -> Scene {
     let small_sphere_2 = Sphere::new(Point3d { x: -5., y: 0.75, z: 0. }, 0.75, material);
     let material = Material { material_kind: MaterialKind::Diffuse, color: Color::new(0.8, 0.8, 0.8)};
     let big_sphere = Sphere::new(Point3d { x: -5., y: 0., z: -50. }, 49.25, material);
-
-    let triangle = Triangle::new(Point3d::random(), Point3d::random(), Point3d::random(), material);
+    let mesh = Mesh::import("scene/cube.obj");
     let light_source = Vec3d::new(0., 0., 1.).normalize();
     let scene = Scene {
         spheres: vec![
@@ -50,11 +50,11 @@ fn init_scene() -> Scene {
             small_sphere_2,
             big_sphere,
         ],
-        triangles: vec![
-            triangle,
-        ],
+        triangles: mesh.get_triangles(),
+        meshes: vec![mesh],
         camera,
-        light_source };
+        light_source
+    };
     scene
 }
 
