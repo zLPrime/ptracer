@@ -6,7 +6,6 @@ use super::Surface;
 use super::triangle::Triangle;
 
 use std::fs::read_to_string;
-use std::ops::Deref;
 
 pub struct Mesh {
     triangles: Vec<Triangle>
@@ -39,7 +38,7 @@ impl Mesh {
                     let b = vertices[b_i];
                     let c = vertices[c_i];
                     let material =
-                        Material { material_kind: MaterialKind::Diffuse, color: Color::new(0.8, 0.8, 0.8)};
+                        Material { material_kind: MaterialKind::Glossy, color: Color::new(0.8, 0.8, 0.8)};
                     let triangle = Triangle::new(a, b, c, material);
                     triangles.push(triangle);
                 },

@@ -9,7 +9,8 @@
 + introduce multisampling
 + print FPS
 - optimize using random generator
-- add triangles
-- add support for a 3d scene format
++ add triangles
++ add support for a 3d scene format
 - add light sources
 - make UI asynchronous to rendering
+- tome mapping https://youtu.be/8liHiCNM4iU?t=550

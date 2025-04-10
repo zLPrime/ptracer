@@ -22,7 +22,7 @@ impl Surface for Triangle {
     fn get_normal(&self, point: Point3d) -> Vec3d {
         let a_b = self.b - self.a;
         let b_c = self.c - self.b;
-        return a_b.cross(&b_c)
+        return a_b.cross(&b_c).normalize()
     }
 
     fn intersect(&self, ray: &Ray) -> Option<f32> {
