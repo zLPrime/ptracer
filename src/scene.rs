@@ -5,11 +5,10 @@ use crate::surface::mesh::Mesh;
 use crate::surface::sphere::Sphere;
 use crate::camera::Camera;
 use crate::surface::triangle::Triangle;
-use crate::surface::Surface;
+use crate::surface::{Object, Surface};
 
 pub struct Scene {
     pub spheres: Vec<Sphere>,
-    pub triangles: Vec<Triangle>,
     pub meshes: Vec<Mesh>,
     pub camera: Camera,
     pub light_source: Vec3d,
@@ -23,7 +22,7 @@ fn get_background_color(ray: &Ray) -> Color {
 
 fn get_lightness(ray: &Ray, scene: &Scene) -> Color {
     if get_any_intersection(ray, &scene.spheres)
-    || get_any_intersection(ray, &scene.triangles) {
+    || get_any_intersection_with_objects(ray, &scene.meshes) {
         return Color::new(0., 0., 0.)
     }
     let norm_dir = ray.direction.normalize();
@@ -36,6 +35,17 @@ fn get_any_intersection<T: Surface>(ray: &Ray, surfaces: &[T]) -> bool {
     for surface in surfaces {
         let intersection = surface.intersect(ray);
         match intersection {
+            Some(_) => return true,
+            None => {}
+        }
+    }
+    return false
+}
+
+fn get_any_intersection_with_objects<T: Object>(ray: &Ray, surfaces: &[T]) -> bool {
+    for surface in surfaces {
+        let (_, triangle) = surface.intersect(ray);
+        match triangle {
             Some(_) => return true,
             None => {}
         }
@@ -61,13 +71,31 @@ fn get_closest_ditance<'a, 'b, T: Surface>(ray: &'a Ray, surfaces: &'b [T]) -> (
     return (closest_distance, closest_surface)
 }
 
+fn get_closest_ditance_to_object<'a, 'b, T: Object>(ray: &'a Ray, objects: &'b [T]) -> (f32, Option<&'b Triangle>) {
+    let mut closest_surface  = None;
+    let mut closest_distance = f32::MAX;
+    for object in objects {
+        let (new_distance, triangle) = object.intersect(ray);
+        match triangle {
+            Some(_) => {
+                closest_distance = f32::min(closest_distance, new_distance);
+                if closest_distance == new_distance {
+                    closest_surface = triangle;
+                }
+            }
+            None => continue
+        }
+    }
+    return (closest_distance, closest_surface)
+}
+
 //TODO move it to camera?
 pub fn get_ray_color(ray: &Ray, scene: &Scene, depth: u8) -> Color {
     if depth > 0 {
         let (dist_to_sphere, sphere) = get_closest_ditance(ray, &scene.spheres);
-        let (dist_to_triangle, triangle) = get_closest_ditance(ray, &scene.triangles);
+        let (dist_to_mesh, triangle) = get_closest_ditance_to_object(ray, &scene.meshes);
 
-        if dist_to_sphere < dist_to_triangle {
+        if dist_to_sphere < dist_to_mesh {
             match sphere {
                 Some(surface) => {
                     let (material, bounce_ray) = reflect(ray, dist_to_sphere, surface);
@@ -77,8 +105,8 @@ pub fn get_ray_color(ray: &Ray, scene: &Scene, depth: u8) -> Color {
             }
         } else {
             match triangle {
-                Some(surface) => {
-                    let (material, bounce_ray) = reflect(ray, dist_to_triangle, surface);
+                Some(mesh) => {
+                    let (material, bounce_ray) = reflect(ray, dist_to_mesh, mesh);
                     return material.color * get_ray_color(&bounce_ray, scene, depth - 1)
                 },
                 None => {},

@@ -16,7 +16,6 @@ use scene::Scene;
 use surface::mesh::Mesh;
 use surface::sphere::Sphere;
 use surface::material::*;
-use surface::triangle::Triangle;
 
 const WIDTH: usize = 800;
 const HEIGHT: usize = 600;
@@ -35,22 +34,21 @@ fn init_canvas() -> Canvas {
 fn init_scene() -> Scene {
     let orig_direction = Vec3d {x: 5., y: 0., z: 0.};
     let direction = orig_direction.rotate_x(0.);
-    let camera = Camera { location: Point3d { x: -1., y: 0., z: 0. }, direction };
+    let camera = Camera { location: Point3d { x: 2.1557255, y: 9.327328, z: 0.0 }, direction: Point3d { x: -2.0807352, y: -4.5464883, z: 0.0 } };
     let material = Material { material_kind: MaterialKind::Diffuse, color: Color::new(1., 0.3, 0.3)};
     let small_sphere = Sphere::new(Point3d { x: -5., y: -0.75, z: 0. }, 0.75, material);
     let material = Material { material_kind: MaterialKind::Glossy, color: Color::new(1., 1., 1.)};
     let small_sphere_2 = Sphere::new(Point3d { x: -5., y: 0.75, z: 0. }, 0.75, material);
     let material = Material { material_kind: MaterialKind::Diffuse, color: Color::new(0.8, 0.8, 0.8)};
     let big_sphere = Sphere::new(Point3d { x: -5., y: 0., z: -50. }, 49.25, material);
-    let mesh = Mesh::import("scene/cube.obj");
-    let light_source = Vec3d::new(0., 0., 1.).normalize();
+    let mesh = Mesh::import("scene/monkey.obj");
+    let light_source = Vec3d::new(1., 1., 1.).normalize();
     let scene = Scene {
         spheres: vec![
             small_sphere,
             small_sphere_2,
             big_sphere,
         ],
-        triangles: mesh.get_triangles(),
         meshes: vec![mesh],
         camera,
         light_source
@@ -104,6 +102,9 @@ fn display(scene: &mut Scene) {
             .unwrap();
         
         let elapsed = beginning.elapsed().as_millis();
+        if elapsed > 1000 {
+            println!("Frame duration: {} ms", elapsed);
+        }
         let fps = 1000 / elapsed;
         let s = format!("{} FPS", fps);
         window.set_title(s.as_str());

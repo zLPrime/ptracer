@@ -14,3 +14,8 @@
 - add light sources
 - make UI asynchronous to rendering
 - tome mapping https://youtu.be/8liHiCNM4iU?t=550
+- print camera coordinates (for later use)
++ make meshes part of scene, not triangles (remove get_triangles?)
++ apply bounding box optimization
+- give meshes coordinates; transform local coords to global and back
+- assign material to mesh, not triangle

@@ -8,6 +8,7 @@ use super::{
     Ray, Scene,
 };
 
+#[derive(Debug)]
 pub struct Camera {
     pub location: Point3d,
     pub direction: Vec3d,
