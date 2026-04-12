@@ -1,3 +1,5 @@
+use rayon::iter::ParallelIterator;
+
 use crate::primitives::{Color, rand};
 
 use super::scene::get_ray_color;
@@ -16,19 +18,23 @@ pub struct Camera {
 
 impl Camera {
     pub fn render(&self, canvas: &mut Canvas, scene: &Scene) {
-        let ratio = canvas.width as f32 / canvas.height as f32;
+        let width = canvas.width;
+        let height = canvas.height;
+        let ratio = width as f32 / height as f32;
         let left = self.get_left().normalize() * ratio;
         let top = self.direction.cross(&left).normalize();
         let top_left = self.direction + top + left;
-        let step_v = 2. / (canvas.width - 1) as f32;
-        let step_h = 2. / (canvas.height - 1) as f32;
+        let step_v = 2. / (width - 1) as f32;
+        let step_h = 2. / (height - 1) as f32;
         let half_step_v = step_v / 2.;
         let half_step_h = step_h / 2.;
-        for y in 0..canvas.height {
+
+        canvas.par_rows_mut().for_each(|mut row| {
+            let y = row.y;
             let current_v = top_left - (top * (step_h * (y) as f32));
-            for x in 0..canvas.width {
+            for x in 0..width {
                 let mut color = Color::new(0., 0., 0.);
-                let factor = 4;
+                let factor = 1;
                 for _ in 0..factor {
                     let h_deviation = rand::get_random_float_neg_pos(half_step_h);
                     let v_deviation = rand::get_random_float_neg_pos(half_step_v);
@@ -40,9 +46,9 @@ impl Camera {
                     let ray_color = get_ray_color(&ray, &scene, 2);
                     color = color + ray_color * (1. / factor as f32)
                 }
-                canvas.draw_pixel(x, y, color);
+                row.draw_pixel(x, color);
             }
-        }
+        })
     }
 
     pub fn rotate_x(&mut self, theta: f32) {

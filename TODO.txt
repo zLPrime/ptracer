@@ -19,3 +19,5 @@
 + apply bounding box optimization
 - give meshes coordinates; transform local coords to global and back
 - assign material to mesh, not triangle
+- introduce oprimizations switch mechanism (turn them on and off)
+- visualize how much compute time each pixel/region takes

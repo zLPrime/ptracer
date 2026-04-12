@@ -96,7 +96,6 @@ fn display(scene: &mut Scene) {
             scene.camera.move_left(-m_step);
         }
         
-        // We unwrap here as we want this code to exit if it fails. Real applications may want to handle this in a different way
         window
             .update_with_buffer(&canvas.buffer, canvas.width, canvas.height)
             .unwrap();

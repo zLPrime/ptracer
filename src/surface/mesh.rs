@@ -92,7 +92,8 @@ impl Mesh {
                 _ => {} // ignore other objects
             }
         }
-        println!("{:?}", bounding_box);
+        println!("Bounding box coordinates {:?}", bounding_box);
+        println!("Number of triangles {:?}", triangles.len());
         Mesh {
             triangles,
             bounding_box,
