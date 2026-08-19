@@ -2,6 +2,7 @@
 
 **ptracer** is a programmatical raytracer. The goal of this project is to test optimization techniques for computation-heavy tasks.
 
+![alt text](image.png)
 ## Current functionality
 
 - raytracing spheres and triangles
