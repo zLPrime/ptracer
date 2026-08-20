@@ -40,7 +40,7 @@ impl BoundingBox {
 
 impl Mesh {
     pub fn import(path: &str) -> Mesh {
-        let content = read_to_string(path).expect(format!("Could not read file {path}.").as_str());
+        let content = read_to_string(path).unwrap_or_else(|_| panic!("Could not read file {path}."));
         let mut vertices: Vec<Point3d> = Vec::new();
         let mut triangles: Vec<Triangle> = Vec::new();
         let mut bounding_box: BoundingBox = BoundingBox::new();
@@ -72,13 +72,13 @@ impl Mesh {
                     }
 
                     vertices.push(vertex);
-                    assert!(split.next() == None)
+                    assert!(split.next().is_none())
                 }
                 "f" => {
                     let a_i = parse_vertex_index(split.next().unwrap());
                     let b_i = parse_vertex_index(split.next().unwrap());
                     let c_i = parse_vertex_index(split.next().unwrap());
-                    assert!(split.next() == None, "Only triagonal faces are supported!");
+                    assert!(split.next().is_none(), "Only triagonal faces are supported!");
                     let a = vertices[a_i];
                     let b = vertices[b_i];
                     let c = vertices[c_i];
@@ -107,7 +107,7 @@ impl Object for Mesh {
         let mut closest_triangle = None;
 
         // check if ray hits bounding box
-        if hits_boudning_box(ray, &self.bounding_box) {
+        if hits_bounding_box(ray, &self.bounding_box) {
             for triangle in &self.triangles {
                 match triangle.intersect(ray) {
                     Some(distance) => {
@@ -119,11 +119,8 @@ impl Object for Mesh {
                     None => continue,
                 }
             }
-            //println!("hit")
-        } else {
-            //println!("miss")
         }
-        return (closest_distance, closest_triangle);
+        (closest_distance, closest_triangle)
     }
 }
 
@@ -131,36 +128,35 @@ fn parse_vertex_index(str: &str) -> usize {
     str.split('/').next().unwrap().parse::<usize>().unwrap() - 1
 }
 
-fn hits_boudning_box(ray: &Ray, bounding_box: &BoundingBox) -> bool {
+fn hits_bounding_box(ray: &Ray, bounding_box: &BoundingBox) -> bool {
     let mut min_t = f32::MIN;
     let mut max_t = f32::MAX;
-    let res = intersect_one_dimention(
+
+    intersect_one_dimension(
         &mut min_t,
         &mut max_t,
         ray.direction.x,
         bounding_box.min.x,
         bounding_box.max.x,
         ray.origin.x,
-    ) && intersect_one_dimention(
+    ) && intersect_one_dimension(
         &mut min_t,
         &mut max_t,
         ray.direction.y,
         bounding_box.min.y,
         bounding_box.max.y,
         ray.origin.y,
-    ) && intersect_one_dimention(
+    ) && intersect_one_dimension(
         &mut min_t,
         &mut max_t,
         ray.direction.z,
         bounding_box.min.z,
         bounding_box.max.z,
         ray.origin.z,
-    ) && max_t > 0.;
-    //if !res {panic!()}
-    return res;
+    ) && max_t > 0.
 }
 
-fn intersect_one_dimention(
+fn intersect_one_dimension(
     min_t: &mut f32,
     max_t: &mut f32,
     direction_i: f32,
@@ -179,8 +175,8 @@ fn intersect_one_dimention(
         };
         *min_t = f32::max(*min_t, new_min_t);
         *max_t = f32::min(*max_t, new_max_t);
-        return max_t > min_t;
+        max_t > min_t
     } else {
-        return origin_i <= max_i && origin_i >= min_i;
+        origin_i <= max_i && origin_i >= min_i
     }
 }

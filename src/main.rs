@@ -27,13 +27,11 @@ fn main() {
 }
 
 fn init_canvas() -> Canvas {
-    let canvas = Canvas::new(WIDTH, HEIGHT);
-    canvas
+    
+    Canvas::new(WIDTH, HEIGHT)
 }
 
 fn init_scene() -> Scene {
-    let orig_direction = Vec3d {x: 5., y: 0., z: 0.};
-    let direction = orig_direction.rotate_x(0.);
     let camera = Camera { location: Point3d { x: 2.1557255, y: 9.327328, z: 0.0 }, direction: Point3d { x: -2.0807352, y: -4.5464883, z: 0.0 } };
     let material = Material { material_kind: MaterialKind::Diffuse, color: Color::new(1., 0.3, 0.3)};
     let small_sphere = Sphere::new(Point3d { x: -5., y: -0.75, z: 0. }, 0.75, material);
@@ -43,7 +41,8 @@ fn init_scene() -> Scene {
     let big_sphere = Sphere::new(Point3d { x: -5., y: 0., z: -50. }, 49.25, material);
     let mesh = Mesh::import("scene/monkey.obj");
     let light_source = Vec3d::new(1., 1., 1.).normalize();
-    let scene = Scene {
+    
+    Scene {
         spheres: vec![
             small_sphere,
             small_sphere_2,
@@ -52,8 +51,7 @@ fn init_scene() -> Scene {
         meshes: vec![mesh],
         camera,
         light_source
-    };
-    scene
+    }
 }
 
 fn display(scene: &mut Scene) {
@@ -77,7 +75,7 @@ fn display(scene: &mut Scene) {
     while window.is_open() && !window.is_key_down(Key::Escape) {
         let beginning = Instant::now();
 
-        scene.camera.render(&mut canvas, &scene);
+        scene.camera.render(&mut canvas, scene);
         if window.is_key_down(Key::Left) {
             scene.camera.rotate_x(r_step);
         } else if window.is_key_down(Key::Right) {

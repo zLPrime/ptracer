@@ -14,6 +14,7 @@ pub struct Matrix3x1 {
 }
 
 impl Matrix3x3 {
+    #[allow(clippy::too_many_arguments)] // a 3x3 matrix has nine components
     pub fn new(a11: f32, a12: f32, a13: f32,
         a21: f32, a22: f32, a23: f32,
         a31: f32, a32: f32, a33: f32) -> Matrix3x3 {

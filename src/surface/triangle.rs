@@ -19,18 +19,18 @@ impl Triangle {
 }
 
 impl Surface for Triangle {
-    fn get_normal(&self, point: Point3d) -> Vec3d {
+    fn get_normal(&self, _point: Point3d) -> Vec3d {
         let a_b = self.b - self.a;
         let b_c = self.c - self.b;
-        return a_b.cross(&b_c).normalize()
+        a_b.cross(&b_c).normalize()
     }
 
     fn intersect(&self, ray: &Ray) -> Option<f32> {
-        moller_trumbore_intersection(ray, &self)
+        moller_trumbore_intersection(ray, self)
     }
     
     fn get_material(&self) -> Material {
-        return self.material
+        self.material
     }
 }
 
@@ -48,7 +48,7 @@ fn moller_trumbore_intersection (ray: &Ray, triangle: &Triangle) -> Option<f32> 
     let inv_det = 1.0 / det;
     let s = ray.origin - triangle.a;
     let u = inv_det * s.dot(&ray_cross_e2);
-    if u < 0.0 || u > 1.0 {
+    if !(0.0..=1.0).contains(&u) {
         return None;
     }
 
@@ -61,10 +61,10 @@ fn moller_trumbore_intersection (ray: &Ray, triangle: &Triangle) -> Option<f32> 
     let t = inv_det * e2.dot(&s_cross_e1);
 
     if t > f32::EPSILON { // ray intersection
-        return Some(t)
+        Some(t)
     }
     else
     {
-        return None
+        None
     }
 }

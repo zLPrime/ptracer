@@ -13,13 +13,13 @@ pub struct Sphere {
 
 impl Sphere {
     pub fn new(center: Point3d, radius: f32, material: Material) -> Self {
-        return Self { center, radius, material }
+        Self { center, radius, material }
     }
 }
 
 impl Surface for Sphere {
     fn get_normal(&self, point: Point3d) -> Vec3d {
-        return (point - self.center) / self.radius;
+        (point - self.center) / self.radius
     }
 
     fn intersect(&self, ray: &Ray) -> Option<f32> {
@@ -44,10 +44,10 @@ impl Surface for Sphere {
             return None
         }
     
-        return Some(f32::min(t1, t2))
+        Some(f32::min(t1, t2))
     }
 
     fn get_material(&self) -> Material {
-        return self.material
+        self.material
     }
 }
