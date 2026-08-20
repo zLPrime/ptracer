@@ -119,9 +119,6 @@ impl Object for Mesh {
                     None => continue,
                 }
             }
-            //println!("hit")
-        } else {
-            //println!("miss")
         }
         (closest_distance, closest_triangle)
     }
@@ -134,8 +131,7 @@ fn parse_vertex_index(str: &str) -> usize {
 fn hits_bounding_box(ray: &Ray, bounding_box: &BoundingBox) -> bool {
     let mut min_t = f32::MIN;
     let mut max_t = f32::MAX;
-    
-    //if !res {panic!()}
+
     intersect_one_dimension(
         &mut min_t,
         &mut max_t,
