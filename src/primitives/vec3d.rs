@@ -119,6 +119,12 @@ impl ops::Mul<Vec3d> for Vec3d {
 mod tests {
     use crate::Vec3d;
 
+    /// Compare two floats up to a small tolerance, so results that pass
+    /// through `sqrt`/division aren't held to exact bit-equality.
+    fn approx_eq(a: f32, b: f32) -> bool {
+        (a - b).abs() <= 1e-6
+    }
+
     #[test]
     fn len_squared() {
         let vec3d = Vec3d {
@@ -128,7 +134,7 @@ mod tests {
         };
         let len_squared = vec3d.len_squared();
 
-        assert!(len_squared == 3.);
+        assert!(approx_eq(len_squared, 3.));
     }
 
     #[test]
@@ -138,9 +144,9 @@ mod tests {
             y: 1.,
             z: 1.,
         };
-        let len_squared = vec3d.len();
+        let len = vec3d.len();
 
-        assert!(len_squared == 3_f32.sqrt());
+        assert!(approx_eq(len, 3_f32.sqrt()));
     }
 
     #[test]
@@ -152,9 +158,9 @@ mod tests {
         };
         let normalized = vec3d.normalize();
 
-        assert!(normalized.x == 3_f32.sqrt()/3.);
-        assert!(normalized.y == 3_f32.sqrt()/3.);
-        assert!(normalized.z == 3_f32.sqrt()/3.);
+        assert!(approx_eq(normalized.x, 3_f32.sqrt() / 3.));
+        assert!(approx_eq(normalized.y, 3_f32.sqrt() / 3.));
+        assert!(approx_eq(normalized.z, 3_f32.sqrt() / 3.));
     }
 
     #[test]
@@ -173,9 +179,9 @@ mod tests {
 
         let cross = vec1.cross(&vec2);
 
-        assert!(cross.x == 0.);
-        assert!(cross.y == 0.);
-        assert!(cross.z == -1.);
+        assert!(approx_eq(cross.x, 0.));
+        assert!(approx_eq(cross.y, 0.));
+        assert!(approx_eq(cross.z, -1.));
     }
 
     #[test]
@@ -194,8 +200,8 @@ mod tests {
 
         let cross = vec1.cross(&vec2);
 
-        assert!(cross.x == 0.);
-        assert!(cross.y == 0.);
-        assert!(cross.z == 1.);
+        assert!(approx_eq(cross.x, 0.));
+        assert!(approx_eq(cross.y, 0.));
+        assert!(approx_eq(cross.z, 1.));
     }
 }
