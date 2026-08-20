@@ -41,7 +41,7 @@ fn get_any_intersection_with_objects<T: Object>(ray: &Ray, surfaces: &[T]) -> bo
     false
 }
 
-fn get_closest_ditance<'b, T: Surface>(ray: &Ray, surfaces: &'b [T]) -> (f32, Option<&'b T>) {
+fn get_closest_distance<'b, T: Surface>(ray: &Ray, surfaces: &'b [T]) -> (f32, Option<&'b T>) {
     let mut closest_surface  = None;
     let mut closest_distance = f32::MAX;
     for surface in surfaces {
@@ -59,7 +59,7 @@ fn get_closest_ditance<'b, T: Surface>(ray: &Ray, surfaces: &'b [T]) -> (f32, Op
     (closest_distance, closest_surface)
 }
 
-fn get_closest_ditance_to_object<'b, T: Object>(ray: &Ray, objects: &'b [T]) -> (f32, Option<&'b Triangle>) {
+fn get_closest_distance_to_object<'b, T: Object>(ray: &Ray, objects: &'b [T]) -> (f32, Option<&'b Triangle>) {
     let mut closest_surface  = None;
     let mut closest_distance = f32::MAX;
     for object in objects {
@@ -80,8 +80,8 @@ fn get_closest_ditance_to_object<'b, T: Object>(ray: &Ray, objects: &'b [T]) -> 
 //TODO move it to camera?
 pub fn get_ray_color(ray: &Ray, scene: &Scene, depth: u8) -> Color {
     if depth > 0 {
-        let (dist_to_sphere, sphere) = get_closest_ditance(ray, &scene.spheres);
-        let (dist_to_mesh, triangle) = get_closest_ditance_to_object(ray, &scene.meshes);
+        let (dist_to_sphere, sphere) = get_closest_distance(ray, &scene.spheres);
+        let (dist_to_mesh, triangle) = get_closest_distance_to_object(ray, &scene.meshes);
 
         if dist_to_sphere < dist_to_mesh {
             if let Some(surface) = sphere {
