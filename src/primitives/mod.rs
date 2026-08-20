@@ -1,5 +1,3 @@
-use core::convert::From;
-use std::mem::transmute_copy;
 use vec3d::{Point3d, Vec3d};
 use std::ops;
 
@@ -60,21 +58,12 @@ impl ops::Add<Color> for Color {
     }
 }
 
-pub struct Color8b {
-    blue: u8,
-    green: u8,
-    red: u8,
-    alpha: u8,
-}
-
 impl From<Color> for u32 {
     fn from(color: Color) -> Self {
-        let color8b = Color8b {
-            red: (color.red * 256.) as u8,
-            green: (color.green * 256.) as u8,
-            blue: (color.blue * 256.) as u8,
-            alpha: 0_u8,
-        };
-        unsafe { transmute_copy(&color8b) }
+        // Pack into 0x00RRGGBB as expected by minifb.
+        let red = (color.red * 256.) as u8 as u32;
+        let green = (color.green * 256.) as u8 as u32;
+        let blue = (color.blue * 256.) as u8 as u32;
+        (red << 16) | (green << 8) | blue
     }
 }

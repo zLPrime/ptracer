@@ -14,12 +14,6 @@ pub struct Scene {
     pub light_source: Vec3d,
 }
 
-fn get_background_color(ray: &Ray) -> Color {
-    let norm_dir = ray.direction.normalize();
-    
-    Color::new(norm_dir.x, norm_dir.y, norm_dir.z)
-}
-
 fn get_lightness(ray: &Ray, scene: &Scene) -> Color {
     if get_any_intersection(ray, &scene.spheres)
     || get_any_intersection_with_objects(ray, &scene.meshes) {
@@ -101,7 +95,6 @@ pub fn get_ray_color(ray: &Ray, scene: &Scene, depth: u8) -> Color {
             }
         }
     }
-    // return get_background_color(ray);
     get_lightness(ray, scene)
 }
 

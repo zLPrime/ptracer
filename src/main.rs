@@ -32,8 +32,6 @@ fn init_canvas() -> Canvas {
 }
 
 fn init_scene() -> Scene {
-    let orig_direction = Vec3d {x: 5., y: 0., z: 0.};
-    let _direction = orig_direction.rotate_x(0.);
     let camera = Camera { location: Point3d { x: 2.1557255, y: 9.327328, z: 0.0 }, direction: Point3d { x: -2.0807352, y: -4.5464883, z: 0.0 } };
     let material = Material { material_kind: MaterialKind::Diffuse, color: Color::new(1., 0.3, 0.3)};
     let small_sphere = Sphere::new(Point3d { x: -5., y: -0.75, z: 0. }, 0.75, material);
