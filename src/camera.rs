@@ -43,7 +43,7 @@ impl Camera {
                         origin: self.location,
                         direction,
                     };
-                    let ray_color = get_ray_color(&ray, &scene, 2);
+                    let ray_color = get_ray_color(&ray, scene, 2);
                     color = color + ray_color * (1. / factor as f32)
                 }
                 row.draw_pixel(x, color);

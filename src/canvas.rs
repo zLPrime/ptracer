@@ -32,7 +32,7 @@ impl Canvas {
         self.buffer.iter_mut().for_each(|v| *v = 0);
     }
 
-    pub fn par_rows_mut(&mut self) -> impl IndexedParallelIterator<Item = Row> {
+    pub fn par_rows_mut(&mut self) -> impl IndexedParallelIterator<Item = Row<'_>> {
         self.buffer
             .par_chunks_mut(self.width)
             .enumerate()

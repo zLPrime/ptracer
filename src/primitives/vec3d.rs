@@ -140,7 +140,7 @@ mod tests {
         };
         let len_squared = vec3d.len();
 
-        assert!(len_squared == (3. as f32).sqrt());
+        assert!(len_squared == 3_f32.sqrt());
     }
 
     #[test]
@@ -152,9 +152,9 @@ mod tests {
         };
         let normalized = vec3d.normalize();
 
-        assert!(normalized.x == (3. as f32).sqrt()/3.);
-        assert!(normalized.y == (3. as f32).sqrt()/3.);
-        assert!(normalized.z == (3. as f32).sqrt()/3.);
+        assert!(normalized.x == 3_f32.sqrt()/3.);
+        assert!(normalized.y == 3_f32.sqrt()/3.);
+        assert!(normalized.z == 3_f32.sqrt()/3.);
     }
 
     #[test]
